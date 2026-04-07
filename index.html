@@ -265,8 +265,15 @@ async function loadDetail(id){
     c.callerNumber=val(dc.caller_phone)||val(dc.phone_number)||val(dc.phone)||null;
     // Extract from metadata (Twilio passes phone info here)
     const m=d.metadata||{};
+    // Check phone_call sub-object first (new ElevenLabs schema for Twilio inbound)
+    const pc=m.phone_call||{};
+    if(!c.callerNumber) c.callerNumber=val(pc.external_number)||val(pc.from_number)||null;
     if(!c.callerNumber) c.callerNumber=val(m.caller_id)||val(m.phone_number)||val(m.from_number)||val(m.caller_number)||val(m.From)||val(m.from)||null;
     if(!c.callerName) c.callerName=val(m.caller_name)||null;
+    // Check top-level user_id (ElevenLabs sets this to caller phone for Twilio telephony calls)
+    if(!c.callerNumber) c.callerNumber=val(d.user_id)||null;
+    // Check metadata.user_id
+    if(!c.callerNumber) c.callerNumber=val(m.user_id)||null;
     // Check conversation_initiation_client_data (Twilio webhook data lives here)
     const ci=d.conversation_initiation_client_data||{};
     if(ci.dynamic_variables){
