@@ -278,7 +278,7 @@ async function loadDetail(id){
     const ci=d.conversation_initiation_client_data||{};
     if(ci.dynamic_variables){
       const dv=ci.dynamic_variables;
-      if(!c.callerNumber) c.callerNumber=val(dv.caller_number)||val(dv.from_number)||val(dv.From)||val(dv.phone_number)||null;
+      if(!c.callerNumber) c.callerNumber=val(dv["system__caller_id"])||val(dv.caller_number)||val(dv.from_number)||val(dv.From)||val(dv.phone_number)||null;
       if(!c.callerName) c.callerName=val(dv.caller_name)||val(dv.name)||null;
     }
     // Also check top-level metadata keys that Twilio might inject
